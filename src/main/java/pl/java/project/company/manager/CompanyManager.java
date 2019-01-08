@@ -6,10 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import pl.java.project.company.manager.controllers.MainController;
 import pl.java.project.company.manager.tables.Database;
 
 
 public class CompanyManager extends Application {
+  Pair<String, String> user;
 
   private static final String FXML_MAIN_PATCH = "/fxml/main.fxml";
 
@@ -19,6 +21,8 @@ public class CompanyManager extends Application {
 
     FXMLLoader loader = new FXMLLoader(Dialogs.class.getResource(FXML_MAIN_PATCH));
     primaryStage.setScene(new Scene(loader.load()));
+    MainController mainController = loader.getController();
+    mainController.setUser(user);
     primaryStage.setMinWidth(primaryStage.getWidth());
     primaryStage.setMinHeight(180);
     primaryStage.setTitle("CompanyManager");
@@ -34,8 +38,8 @@ public class CompanyManager extends Application {
   private void createConnection() {
     boolean f;
     do {
-      Pair<String, String> result = Dialogs.loginDialog();
-      f = Database.setUpSession(result.getKey(), result.getValue());
+      user = Dialogs.loginDialog();
+      f = Database.setUpSession(user.getKey(), user.getValue());
     } while (!f);
   }
 }

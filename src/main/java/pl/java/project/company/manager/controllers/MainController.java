@@ -5,9 +5,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.hibernate.Session;
 import pl.java.project.company.manager.Dialogs;
 import pl.java.project.company.manager.tables.Database;
@@ -30,16 +32,18 @@ public class MainController {
   public ToggleButton transfersBtn;
   public ToggleButton portfolioBtn;
   public ToggleButton databaseBtn;
+  public Label userLb;
+  private Pair<String, String> user;
 
-  public void exitAction(ActionEvent actionEvent) {
+  public void exitAction() {
     System.exit(0);
   }
 
-  public void setModena(ActionEvent actionEvent) {
+  public void setModena() {
     Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
   }
 
-  public void setCaspian(ActionEvent actionEvent) {
+  public void setCaspian() {
     Application.setUserAgentStylesheet(Application.STYLESHEET_CASPIAN);
   }
 
@@ -48,51 +52,68 @@ public class MainController {
     stage.setAlwaysOnTop(((CheckMenuItem)event.getSource()).isSelected());
   }
 
-  public void aboutAction(ActionEvent actionEvent) {
+  public void aboutAction() {
     Dialogs.dialogAboutApplication();
   }
 
-  public void setCenterPersons(ActionEvent actionEvent) {
+  public void setCenterPersons() {
     setCenter(PERSONS_FXML);
   }
 
-  public void setCenterWorkers(ActionEvent actionEvent) {
+  public void setCenterWorkers() {
     setCenter(WORKERS_FXML);
   }
 
-  public void setCenterLeaves(ActionEvent actionEvent) {
+  public void setCenterLeaves() {
     setCenter(LEAVES_FXML);
   }
 
-  public void setCenterSalary(ActionEvent actionEvent) {
+  public void setCenterSalary() {
     setCenter(SALARY_FXML);
   }
 
-  public void setCenterTransfers(ActionEvent actionEvent) {
+  public void setCenterTransfers() {
     setCenter(TRANSFERS_FXML);
   }
 
-  public void setCenterPortfolio(ActionEvent actionEvent) {
+  public void setCenterPortfolio() {
     setCenter(PORTFOLIO_FXML);
   }
 
   @FXML
   public void initialize(){
+    permissions();
+    if(!personsBtn.isDisable()){
+      setCenterPersons();
+      personsBtn.setSelected(true);
+    }
+    else if(!leavesBtn.isDisable()) {
+      setCenterLeaves();
+      leavesBtn.setSelected(true);
+    }else{
+      setCenterTransfers();
+      transfersBtn.setSelected(true);
+    }
+  }
+
+  private void permissions() {
     Session session = Database.openSession();
-    Boolean isBoss =true;
+    boolean isBoss =true;
     try {
       session.createQuery("select count(id) from Portfolio").list();
     }catch (PersistenceException e){
       portfolioBtn.setDisable(true);
       transfersBtn.setDisable(true);
       isBoss=false;
-    }try {
+    }
+    try {
       session.createQuery("select count(id) from Worker").list();
     }catch (PersistenceException e){
       personsBtn.setDisable(true);
       workersBtn.setDisable(true);
       isBoss=false;
-    } try {
+    }
+    try {
       session.createQuery("select count(id) from Leave").list();
     }catch (PersistenceException e){
       leavesBtn.setDisable(true);
@@ -112,7 +133,19 @@ public class MainController {
     }
   }
 
-  public void setCenterDatabase(ActionEvent actionEvent) {
-      setCenter("/fxml/databaseMan.fxml");
+  public void setCenterDatabase() {
+    FXMLLoader loader = new FXMLLoader(Dialogs.class.getResource("/fxml/databaseMan.fxml"));
+    try {
+      mainBorderPane.setCenter(loader.load());
+      DatabaseController databaseController = loader.getController();
+      databaseController.setUser(user);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void setUser(Pair<String, String> user) {
+    this.user = user;
+    userLb.setText(user.getKey());
   }
 }

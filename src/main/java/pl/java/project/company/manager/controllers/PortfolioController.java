@@ -58,13 +58,12 @@ public class PortfolioController {
   }
 
   public void doAction() {
-    int change = -1;
+    int change;
     try {
       change = Integer.parseInt(changeTF.getText());
     } catch (NumberFormatException e) {
       Dialogs.warningAlert("Change must be a number!!");
-      final Stage stage = (Stage) doBtn.getScene().getWindow();
-      stage.close();
+      return;
     }
 
     Session session = Database.openSession();
