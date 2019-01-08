@@ -1,0 +1,1 @@
+mysql -u%1 -p%2 companymanager < %3

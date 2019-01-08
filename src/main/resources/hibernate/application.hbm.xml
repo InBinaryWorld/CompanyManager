@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+    <class name="pl.java.project.company.manager.tables.Person" table="persons">
+        <id name="pesel" column="pesel"/>
+        <property name="name" column="name"/>
+        <property name="surname" column="surname"/>
+        <property name="dateOfBirth" column="dateOfBirth"/>
+        <set name="workers" cascade="persist" inverse="true">
+            <key column="id"/>
+            <one-to-many class="pl.java.project.company.manager.tables.Worker"/>
+        </set>
+        <set name="salaryHistories" cascade="persist" inverse="true">
+            <key column="id"/>
+            <one-to-many class="pl.java.project.company.manager.tables.SalaryHistory"/>
+        </set>
+        <set name="transfersMades" cascade="persist" inverse="true">
+            <key column="id"/>
+            <one-to-many class="pl.java.project.company.manager.tables.TransfersMade"/>
+        </set>
+    </class>
+
+    <class name="pl.java.project.company.manager.tables.Worker" table="workers">
+        <id name="id" column="id">
+            <generator class="increment"/>
+        </id>
+        <property name="profession" column="profession"/>
+        <property name="salary" column="salary"/>
+        <property name="beginDate" column="beginDate"/>
+        <property name="endDate" column="endDate"/>
+        <many-to-one name="person" class="pl.java.project.company.manager.tables.Person" column="person" not-null="true"/>
+        <set name="leaves"  cascade="persist" inverse="true">
+            <key column="id"/>
+            <one-to-many class="pl.java.project.company.manager.tables.Leave"/>
+        </set>
+    </class>
+
+    <class name="pl.java.project.company.manager.tables.Leave" table="leaves">
+        <id name="id" column="id">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="worker" column="worker" class="pl.java.project.company.manager.tables.Worker" not-null="true"/>
+        <property name="beginDate" column="beginDate"/>
+        <property name="endDate" column="endDate"/>
+    </class>
+
+    <class name="pl.java.project.company.manager.tables.Portfolio" table="portfolio">
+        <id name="id" column="id">
+            <generator class="increment"/>
+        </id>
+        <property name="change" column="change"/>
+        <property name="currentState" column="currentState"/>
+        <property name="changeDate" column="changeDate"/>
+        <property name="title" column="title"/>
+        <set name="transfersMades" cascade="persist" inverse="true">
+            <key column="id"/>
+            <one-to-many class="pl.java.project.company.manager.tables.TransfersMade"/>
+        </set>
+    </class>
+
+    <class name="pl.java.project.company.manager.tables.SalaryHistory" table="salaryhistory" >
+        <id name="id" column="id">
+            <generator class="increment"/>
+        </id>
+        <property name="oldSalary" column="oldSalary"/>
+        <property name="newSalary" column="newSalary"/>
+        <many-to-one name="person" column="person"/>
+        <property name="changeDate" column="changeDate"/>
+    </class>
+    <class name="pl.java.project.company.manager.tables.TransfersMade" table="transfersmade">
+        <id name="id" column="id">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="portfolio" column="transactionId"/>
+        <many-to-one name="person" column="person"/>
+        <property name="amount" column="amount"/>
+    </class>
+</hibernate-mapping>

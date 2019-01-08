@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.java.project.company.manager.controllers.MainController">
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <RadioMenuItem mnemonicParsing="false" onAction="#setCaspian" text="Caspian">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="styleGrup" />
+                            </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem mnemonicParsing="false" onAction="#setModena" text="Modena" toggleGroup="$styleGrup" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <CheckMenuItem mnemonicParsing="false" onAction="#AlwaysOnTopAction" text="Always on top" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="About application" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox prefHeight="514.0" prefWidth="190.0" BorderPane.alignment="CENTER">
+            <children>
+                <ToggleButton fx:id="personsBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterPersons" prefHeight="70.0" text="Persons">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="buttonGroup" />
+                    </toggleGroup>
+                </ToggleButton>
+                <ToggleButton fx:id="workersBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterWorkers" prefHeight="70.0" text="Workers" toggleGroup="$buttonGroup" />
+                <ToggleButton fx:id="leavesBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterLeaves" prefHeight="70.0" text="Leaves" toggleGroup="$buttonGroup" />
+                <ToggleButton fx:id="salaryBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterSalary" prefHeight="70.0" text="Salary History" toggleGroup="$buttonGroup" />
+                <ToggleButton fx:id="transfersBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterTransfers" prefHeight="70.0" text="Transfers" toggleGroup="$buttonGroup" />
+                <ToggleButton fx:id="portfolioBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterPortfolio" prefHeight="70.0" text="Portfolio" toggleGroup="$buttonGroup" />
+                <ToggleButton fx:id="databaseBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setCenterDatabase" prefHeight="70.0" text="Database" toggleGroup="$buttonGroup" />
+            </children>
+        </VBox>
+    </left>
+</BorderPane>
