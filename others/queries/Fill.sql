@@ -104,4 +104,4 @@ END;//
 DELIMITER ;
 
 CALL fill_Persons();
-#CALL fill_Workers();
+CALL fill_Workers();
