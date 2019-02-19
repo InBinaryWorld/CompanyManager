@@ -163,14 +163,31 @@ FOR EACH ROW BEGIN
     set @msg = "Wrong date";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
 	END IF;
-    IF ((SELECT sum(days)+timestampdiff(day,now(),now()) AS days  FROM
+    IF ((SELECT ifnull((days)+timestampdiff(day,new.beginDate,new.endDate),timestampdiff(day,new.beginDate,new.endDate)) AS days  FROM
 	(SELECT timestampdiff(day,beginDate,endDate) AS days FROM Leaves WHERE Leaves.worker = new.worker)A)
-		> (SELECT sum(months)*26/12 FROM 
+		> (SELECT CAST(sum(months)*26/12 AS UNSIGNED) FROM 
 	(SELECT timestampdiff(month,beginDate,IFNULL(endDate,curdate())) AS months FROM Workers WHERE Workers.person = 
 		(SELECT person FROM workers WHERE id=new.worker) )A)) THEN
-    set @msg = "Can not take a leave";
+		set @msg = "Can not take a leave";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
     END IF;
+    IF (select count(*) FROM (SELECT beginDate,endDate FROM Leaves WHERE Leaves.worker = new.worker) A 
+    WHERE new.beginDate <= A.beginDate and new.endDate >= A.beginDate 
+		or new.beginDate <= A.endDate and new.endDate >= A.endDate 
+			or A.beginDate <= new.beginDate and A.endDate>=new.endDAte)!=0 then
+		set @msg = "wrong date";
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+    END IF;
+    IF (new.beginDate < now()) then
+		set @msg = "wrong date";
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+    END IF;
+    if (SELECT count(*) FROM 
+	(SELECT beginDate,endDate FROM Workers WHERE Workers.person = 
+		(SELECT person FROM workers WHERE id=new.worker) )A where curdate() BETWEEN beginDate and endDate or beginDate <= curdate() and endDate is null)>0 THEN
+        set @msg = "Employer is not working here anymore";
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+    end if;
 END;//
 
 CREATE TRIGGER leaves_I
@@ -180,7 +197,7 @@ FOR EACH ROW BEGIN
     set @msg = "Wrong date";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
 	END IF;
-    IF ((SELECT sum(days)+timestampdiff(day,now(),now()) AS days  FROM
+    IF ((SELECT ifnull(sum(days)+timestampdiff(day,new.beginDate,new.endDate),timestampdiff(day,new.beginDate,new.endDate)) AS days  FROM
 	(SELECT timestampdiff(day,beginDate,endDate) AS days FROM Leaves WHERE Leaves.worker = new.worker)A)
 		> (SELECT CAST(sum(months)*26/12 AS UNSIGNED) FROM 
 	(SELECT timestampdiff(month,beginDate,IFNULL(endDate,curdate())) AS months FROM Workers WHERE Workers.person = 
@@ -188,11 +205,10 @@ FOR EACH ROW BEGIN
 		set @msg = "Can not take a leave";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
     END IF;
-    IF (select count(*) FROM (SELECT beginDate,endDate FROM Leaves WHERE Leaves.worker = new.worker) A WHERE A.beginDate BETWEEN new.beginDate and new.endDate)!=0 then
-		set @msg = "wrong date";
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
-    END IF;
-    IF (select count(*) FROM (SELECT beginDate,endDate FROM Leaves WHERE Leaves.worker = new.worker) A WHERE A.endDate BETWEEN new.beginDate and new.endDate)!=0 then
+    IF (select count(*) FROM (SELECT beginDate,endDate FROM Leaves WHERE Leaves.worker = new.worker) A 
+    WHERE new.beginDate <= A.beginDate and new.endDate >= A.beginDate 
+		or new.beginDate <= A.endDate and new.endDate >= A.endDate 
+			or A.beginDate <= new.beginDate and A.endDate>=new.endDAte)!=0 then
 		set @msg = "wrong date";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
     END IF;
@@ -200,6 +216,12 @@ FOR EACH ROW BEGIN
 		set @msg = "wrong date";
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
     END IF;
+    if (SELECT count(*) FROM 
+	(SELECT beginDate,endDate FROM Workers WHERE Workers.person = 
+		(SELECT person FROM workers WHERE id=new.worker) )A where curdate() BETWEEN A.beginDate and A.endDate or beginDate <= curdate() and endDate is null)=0 THEN
+        set @msg = "Employer is not working here anymore";
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+    end if;
 END;//
 
 

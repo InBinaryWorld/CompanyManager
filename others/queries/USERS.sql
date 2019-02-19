@@ -4,15 +4,7 @@ DROP USER IF EXISTS 'Recruiter'@'localhost';
 DROP USER IF EXISTS 'Accountant'@'localhost';
 
 CREATE USER 'Boss'@'localhost' IDENTIFIED BY 'Boss';
-GRANT EXECUTE ON PROCEDURE companymanager.portfolioOperation TO 'Boss'@'localhost';
-GRANT EXECUTE ON PROCEDURE companymanager.releaseEmployee TO 'Boss'@'localhost';
-GRANT EXECUTE ON PROCEDURE companymanager.changeSalary TO 'Boss'@'localhost';
-GRANT EXECUTE ON PROCEDURE companymanager.makeTransfer TO 'Boss'@'localhost';
-GRANT EXECUTE ON PROCEDURE companymanager.addLeave TO 'Boss'@'localhost';
-GRANT INSERT ON companymanager.workers TO 'Boss'@'localhost';
-GRANT INSERT,UPDATE ON companymanager.persons TO 'Boss'@'localhost';
-GRANT INSERT ON companymanager.leaves TO 'Boss'@'localhost';
-GRANT SELECT ON companymanager.* TO 'Boss'@'localhost';
+GRANT ALL ON *.* TO 'Boss'@'localhost';
 
 
 CREATE USER 'Manager'@'localhost' IDENTIFIED BY 'Manager';

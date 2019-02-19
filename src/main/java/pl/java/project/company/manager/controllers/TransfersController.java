@@ -3,15 +3,13 @@ package pl.java.project.company.manager.controllers;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pl.java.project.company.manager.Dialogs;
 import pl.java.project.company.manager.tables.Database;
 import pl.java.project.company.manager.tables.TransfersMade;
+import pl.java.project.company.manager.tables.Worker;
 
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceException;

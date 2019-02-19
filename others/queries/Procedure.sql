@@ -31,7 +31,7 @@ BEGIN
         UPDATE portfolio SET `change`= `change`- salaryC, currentState = currentState - salaryC WHERE id=transactionId;
         INSERT INTO transfersMade VALUES(NULL,transactionId,peselC,salaryC);
 	END LOOP;
-    IF budget < 0 THEN
+    IF budget < 0 or (SELECT `change` from portfolio where id=transactionId)=0 THEN
 		ROLLBACK;
 	ELSE
 		COMMIT;
